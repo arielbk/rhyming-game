@@ -5,6 +5,12 @@ module.exports = {
     author: `@gatsbyjs`,
   },
   plugins: [
+    {
+      resolve: "gatsby-source-datamuse",
+      options: {
+        query: "forgetful",
+      },
+    },
     `gatsby-plugin-react-helmet`,
     {
       resolve: `gatsby-source-filesystem`,

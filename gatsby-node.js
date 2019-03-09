@@ -16,7 +16,6 @@ exports.sourceNodes = async ({ actions }) => {
   const fetchRhymingWord = () => axios.get(`https://api.datamuse.com/words?rel_rhy=forgetful`)
   // await results
   const res = await fetchRhymingWord();
-  console.log(res.data);
   // process results and create nodes
   res.data.map((rhyme, i) => {
     const rhymeNode = {
