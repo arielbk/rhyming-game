@@ -14,6 +14,7 @@ const Container = styled.div`
   margin: 0 auto;
   width: 90%;
   max-width: 1020px;
+  padding-bottom: 300px;
   h1, h2, h3 {
     margin: 0;
   }
@@ -33,11 +34,21 @@ const Header = styled.header`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 4rem;
+`;
+
+const ScoreCounter = styled.div`
+  h2 {
+    margin-right: 2rem;
+  }
+  span {
+    font-size: 2rem;
+  }
 `;
 
 const Words = styled.div`
   width: 80%;
-  margin: 0 auto;
+  margin: 2rem auto;
   display: flex;
   justify-content: space-between;
   div {
@@ -51,18 +62,31 @@ const Words = styled.div`
   }
 `;
 
-const NewWord = styled.div`
-  display: inline-block;
-  padding: 0.5rem 1rem;
-  border: 1px solid #777;
-  cursor: pointer;
-  margin: 2rem auto;
+const BPMCounter = styled.div`
+  border: 1px solid gray;
+  background: white;
+  width: 100%;
+  height: 100px;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  h3 {
+    margin-right: 2rem;
+  }
+  span {
+    font-size: 2rem;
+  }
 `;
 
 class App extends Component {
   state = {
     input: '',
     history: [],
+    bpm: 60,
 
     prevWord: '',
     currentWord: '',
@@ -125,14 +149,12 @@ class App extends Component {
           <Header>
             <div>
               <h1>Rhyming Game</h1>
-              <p>See how many words you can rhyme!</p>
             </div>
-            <div>
-              <h2>Score</h2>
+            <ScoreCounter>
+              <h2>Score:</h2>
               <span>{this.state.score}</span>
-            </div>
+            </ScoreCounter>
           </Header>
-          <NewWord onClick={this.newWord}>New Word (or press <code>Tab</code>)</NewWord>
           <Words>
             <div>
               <h3>Previous Word:</h3>
@@ -150,6 +172,7 @@ class App extends Component {
           <form onSubmit={this.submitWord}>
             <input value={this.state.input} onChange={({ target }) => this.setState({ input: target.value })} />
           </form>
+          <BPMCounter><h3>BPM:</h3> <span>{this.state.bpm}</span></BPMCounter>
         </Container>
       </ThemeProvider>
     );
