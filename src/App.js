@@ -98,16 +98,23 @@ class App extends Component {
 
   componentDidMount = () => {
     this.newWord();
-    window.addEventListener('keydown', (e) => {
-      if (e.keyCode === 9) {
-        e.preventDefault();
-        this.newWord();
-      };
-    });
+    window.addEventListener('keydown', this.tabForNewWord);
+  }
+
+
+  componentWillUnmount = () => {
+    window.removeEventListener('keydown', this.tabForNewWord)
+  }
+
+  tabForNewWord = (e) => {
+    if (e.keyCode === 9) {
+      e.preventDefault();
+      this.newWord();
+    };
   }
 
   newWord = () => {
-    // this should be some kind of fetched list - this is for testing
+    // this should be some kind of fetched list - just for testing
     const words = ['egg', 'apple', 'word', 'window', 'cloth', 'towel'];
 
     const randIndex = () => Math.floor(Math.random() * words.length);
@@ -121,9 +128,15 @@ class App extends Component {
     }
 
     axios.get(`https://api.datamuse.com/words?rel_rhy=${currentWord}`)
-      .then(res => {
+      .then(fullRhymeRes => {
         const rhymeWords = [];
-        res.data.forEach(rhyme => rhymeWords.push(rhyme.word));
+        fullRhymeRes.data.forEach(rhyme => rhymeWords.push({ type: 'perfect', word: rhyme.word }));
+
+        axios.get(`https://api.datamuse.com/words?rel_nry=${currentWord}`)
+          .then(nearRhymeRes => {
+            nearRhymeRes.data.forEach(rhyme => rhymeWords.push({ type: 'near', word: rhyme.word }));
+          });
+
         this.setState({ currentWord, nextWord, rhymes: rhymeWords });
       })
       .catch(err => console.error(err));
@@ -135,7 +148,8 @@ class App extends Component {
     const { currentWord, rhymes, input, history } = this.state;
     this.setState({ input: '' });
     if (!currentWord) return;
-    if (rhymes.includes(input.toLowerCase())) {
+    const isFound = rhymes.find(rhyme => rhyme.word === input.toLowerCase())
+    if (isFound) {
       if (history.includes(input)) return;
       this.setState(prevState => ({ score: prevState.score + 1, history: [input, ...prevState.history] }));
     }
