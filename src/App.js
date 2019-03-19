@@ -3,6 +3,9 @@ import styled, { createGlobalStyle, ThemeProvider } from 'styled-components';
 import Typography from 'typography';
 import sutroTheme from 'typography-theme-sutro';
 import axios from 'axios';
+import _ from 'lodash';
+
+import wordsList from './utils/randomWord';
 
 const typography = new Typography(sutroTheme);
 
@@ -114,17 +117,13 @@ class App extends Component {
   }
 
   newWord = () => {
-    // this should be some kind of fetched list - just for testing
-    const words = ['egg', 'apple', 'word', 'window', 'cloth', 'towel'];
-
-    const randIndex = () => Math.floor(Math.random() * words.length);
-    const nextWord = words[randIndex()];
+    const nextWord = _.sample(wordsList);
 
     let currentWord;
     if (this.state.nextWord && this.state.nextWord !== '') {
       currentWord = this.state.nextWord;
     } else {
-      currentWord = words[randIndex()];
+      currentWord = _.sample(wordsList);
     }
 
     axios.get(`https://api.datamuse.com/words?rel_rhy=${currentWord}`)
