@@ -5,7 +5,7 @@ import sutroTheme from 'typography-theme-sutro';
 import axios from 'axios';
 import _ from 'lodash';
 
-import wordsList from './utils/randomWord';
+import wordsList from './utils/wordsList';
 
 const typography = new Typography(sutroTheme);
 
@@ -54,6 +54,7 @@ const Words = styled.div`
   margin: 2rem auto;
   display: flex;
   justify-content: space-between;
+  align-items: flex-start;
   div {
     text-align: center;
     transform: scale(0.6);
@@ -80,8 +81,21 @@ const BPMCounter = styled.div`
   h3 {
     margin-right: 2rem;
   }
-  span {
+  input {
     font-size: 2rem;
+    margin-right: 2rem;
+  }
+
+  .count {
+    height: 30px;
+    width: 30px;
+    border-radius: 50%;
+    background: #ccc;
+    margin: 0 0.3rem;
+  }
+
+  .count__active {
+    background: #555;
   }
 `;
 
@@ -89,7 +103,11 @@ class App extends Component {
   state = {
     input: '',
     history: [],
+
     bpm: 60,
+    beat: 1,
+    metronomeId: null,
+    startTime: null,
 
     prevWord: '',
     currentWord: '',
@@ -102,11 +120,19 @@ class App extends Component {
   componentDidMount = () => {
     this.newWord();
     window.addEventListener('keydown', this.tabForNewWord);
+    const metronomeId = setInterval(() => this.nextBeat(), this.state.bpm / 60 * 1000);
+    this.setState({ metronomeId });
   }
 
 
   componentWillUnmount = () => {
     window.removeEventListener('keydown', this.tabForNewWord)
+  }
+
+  nextBeat = () => {
+    const { beat } = this.state;
+    if (beat < 4) return this.setState({ beat: beat + 1 });
+    return this.setState({ beat: 1 });
   }
 
   tabForNewWord = (e) => {
@@ -155,6 +181,8 @@ class App extends Component {
   }
 
   render() {
+    const { beat } = this.state;
+
     return (
       <ThemeProvider theme={{}}>
         <Container>
@@ -185,7 +213,18 @@ class App extends Component {
           <form onSubmit={this.submitWord}>
             <input value={this.state.input} onChange={({ target }) => this.setState({ input: target.value })} />
           </form>
-          <BPMCounter><h3>BPM:</h3> <span>{this.state.bpm}</span></BPMCounter>
+          <BPMCounter>
+            <h3>BPM:</h3>
+            <input type="number" style={{ display: 'inline-block', margin: 0, padding: 0 }} value={this.state.bpm} onChange={({ target }) => {
+              clearInterval(this.state.metronomeId);
+              const metronomeId = setInterval(() => this.nextBeat(), 60 / target.value * 1000);
+              this.setState({ bpm: target.value, metronomeId });
+            }} />
+            <div className={`count ${beat === 1 ? 'count__active' : ''}`} />
+            <div className={`count ${beat === 2 ? 'count__active' : ''}`} />
+            <div className={`count ${beat === 3 ? 'count__active' : ''}`} />
+            <div className={`count ${beat === 4 ? 'count__active' : ''}`} />
+          </BPMCounter>
         </Container>
       </ThemeProvider>
     );
