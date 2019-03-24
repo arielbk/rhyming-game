@@ -7,6 +7,7 @@ import _ from 'lodash';
 
 import wordsList from './utils/wordsList';
 import BPMCounter from './components/BPMCounter';
+import WordsBar from './components/WordsBar';
 
 const typography = new Typography(sutroTheme);
 
@@ -50,22 +51,7 @@ const ScoreCounter = styled.div`
   }
 `;
 
-const Words = styled.div`
-  width: 80%;
-  margin: 2rem auto;
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  div {
-    text-align: center;
-    transform: scale(0.6);
-    opacity: 0.8;
-  }
-  .current-word {
-    transform: scale(1);
-    opacity: 1;
-  }
-`;
+
 
 class App extends Component {
   state = {
@@ -155,7 +141,7 @@ class App extends Component {
   };
 
   render() {
-    const { beat } = this.state;
+    const { beat, prevWord, currentWord, nextWord } = this.state;
 
     return (
       <ThemeProvider theme={{}}>
@@ -170,20 +156,7 @@ class App extends Component {
               <span>{this.state.score}</span>
             </ScoreCounter>
           </Header>
-          <Words>
-            <div>
-              <h3>Previous Word:</h3>
-              <span>{this.state.prevWord}</span>
-            </div>
-            <div className="current-word">
-              <h3>Current Word:</h3>
-              <span>{this.state.currentWord}</span>
-            </div>
-            <div>
-              <h3>Next Word:</h3>
-              <span>{this.state.nextWord}</span>
-            </div>
-          </Words>
+          <WordsBar prevWord={prevWord} currentWord={currentWord} nextWord={nextWord} />
           <form onSubmit={this.submitWord}>
             <input value={this.state.input} onChange={({ target }) => this.setState({ input: target.value })} />
           </form>

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import styled from 'styled-components';
 
 
-const BPMCounter = styled.div`
+const StyledBPMCounter = styled.div`
   border: 1px solid gray;
   background: white;
   width: 100%;
@@ -39,14 +39,14 @@ export default class BPMCount extends Component {
   render() {
     const { beat, bpm, changeBPM } = this.props;
     return (
-      <BPMCounter>
+      <StyledBPMCounter>
         <h3>BPM:</h3>
         <input type="number" style={{ display: 'inline-block', margin: 0, padding: 0 }} value={bpm} onChange={changeBPM} />
         <div className={`count ${beat === 1 ? 'count__active' : ''}`} />
         <div className={`count ${beat === 2 ? 'count__active' : ''}`} />
         <div className={`count ${beat === 3 ? 'count__active' : ''}`} />
         <div className={`count ${beat === 4 ? 'count__active' : ''}`} />
-      </BPMCounter>
+      </StyledBPMCounter>
     )
   }
 }
