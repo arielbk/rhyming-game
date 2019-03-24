@@ -6,6 +6,7 @@ import axios from 'axios';
 import _ from 'lodash';
 
 import wordsList from './utils/wordsList';
+import BPMCounter from './components/BPMCounter';
 
 const typography = new Typography(sutroTheme);
 
@@ -63,39 +64,6 @@ const Words = styled.div`
   .current-word {
     transform: scale(1);
     opacity: 1;
-  }
-`;
-
-const BPMCounter = styled.div`
-  border: 1px solid gray;
-  background: white;
-  width: 100%;
-  height: 100px;
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  h3 {
-    margin-right: 2rem;
-  }
-  input {
-    font-size: 2rem;
-    margin-right: 2rem;
-  }
-
-  .count {
-    height: 30px;
-    width: 30px;
-    border-radius: 50%;
-    background: #ccc;
-    margin: 0 0.3rem;
-  }
-
-  .count__active {
-    background: #555;
   }
 `;
 
@@ -180,6 +148,12 @@ class App extends Component {
     }
   }
 
+  changeBPM = ({ target }) => {
+    clearInterval(this.state.metronomeId);
+    const metronomeId = setInterval(() => this.nextBeat(), 60 / target.value * 1000);
+    this.setState({ bpm: target.value, metronomeId });
+  };
+
   render() {
     const { beat } = this.state;
 
@@ -213,18 +187,7 @@ class App extends Component {
           <form onSubmit={this.submitWord}>
             <input value={this.state.input} onChange={({ target }) => this.setState({ input: target.value })} />
           </form>
-          <BPMCounter>
-            <h3>BPM:</h3>
-            <input type="number" style={{ display: 'inline-block', margin: 0, padding: 0 }} value={this.state.bpm} onChange={({ target }) => {
-              clearInterval(this.state.metronomeId);
-              const metronomeId = setInterval(() => this.nextBeat(), 60 / target.value * 1000);
-              this.setState({ bpm: target.value, metronomeId });
-            }} />
-            <div className={`count ${beat === 1 ? 'count__active' : ''}`} />
-            <div className={`count ${beat === 2 ? 'count__active' : ''}`} />
-            <div className={`count ${beat === 3 ? 'count__active' : ''}`} />
-            <div className={`count ${beat === 4 ? 'count__active' : ''}`} />
-          </BPMCounter>
+          <BPMCounter beat={beat} bpm={this.state.bpm} changeBPM={this.changeBPM} />
         </Container>
       </ThemeProvider>
     );
