@@ -9,6 +9,7 @@ import wordsList from './utils/wordsList';
 import BPMCounter from './components/BPMCounter';
 import WordsBar from './components/WordsBar';
 import WordInput from './components/WordInput';
+import ScoreCounter from './components/ScoreCounter';
 
 const typography = new Typography(sutroTheme);
 
@@ -35,17 +36,6 @@ const Header = styled.header`
   align-items: center;
   margin-bottom: 4rem;
 `;
-
-const ScoreCounter = styled.div`
-  h2 {
-    margin-right: 2rem;
-  }
-  span {
-    font-size: 2rem;
-  }
-`;
-
-
 
 class App extends Component {
   state = {
@@ -137,7 +127,7 @@ class App extends Component {
   inputChange = ({ target }) => this.setState({ wordInput: target.value });
 
   render() {
-    const { beat, prevWord, currentWord, nextWord, wordInput } = this.state;
+    const { beat, prevWord, currentWord, nextWord, wordInput, score } = this.state;
 
     return (
       <ThemeProvider theme={{}}>
@@ -147,10 +137,7 @@ class App extends Component {
             <div>
               <h1>Rhyming Game</h1>
             </div>
-            <ScoreCounter>
-              <h2>Score:</h2>
-              <span>{this.state.score}</span>
-            </ScoreCounter>
+            <ScoreCounter score={score} />
           </Header>
           <WordsBar prevWord={prevWord} currentWord={currentWord} nextWord={nextWord} />
           <WordInput onSubmit={this.submitWord} value={wordInput} onChange={this.inputChange} />
