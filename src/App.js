@@ -8,6 +8,7 @@ import _ from 'lodash';
 import wordsList from './utils/wordsList';
 import BPMCounter from './components/BPMCounter';
 import WordsBar from './components/WordsBar';
+import WordInput from './components/WordInput';
 
 const typography = new Typography(sutroTheme);
 
@@ -25,13 +26,6 @@ const Container = styled.div`
   }
   h2 {
     display: inline-block;
-  }
-  form {
-    text-align: center;
-  }
-  input {
-    padding: 0.5rem;
-    margin: 2rem auto;
   }
 `;
 
@@ -55,7 +49,7 @@ const ScoreCounter = styled.div`
 
 class App extends Component {
   state = {
-    input: '',
+    wordInput: '',
     history: [],
 
     bpm: 60,
@@ -124,13 +118,13 @@ class App extends Component {
 
   submitWord = (e) => {
     e.preventDefault();
-    const { currentWord, rhymes, input, history } = this.state;
-    this.setState({ input: '' });
+    const { currentWord, rhymes, wordInput, history } = this.state;
+    this.setState({ wordInput: '' });
     if (!currentWord) return;
-    const isFound = rhymes.find(rhyme => rhyme.word === input.toLowerCase())
+    const isFound = rhymes.find(rhyme => rhyme.word === wordInput.toLowerCase())
     if (isFound) {
-      if (history.includes(input)) return;
-      this.setState(prevState => ({ score: prevState.score + 1, history: [input, ...prevState.history] }));
+      if (history.includes(wordInput)) return;
+      this.setState(prevState => ({ score: prevState.score + 1, history: [wordInput, ...prevState.history] }));
     }
   }
 
@@ -140,8 +134,10 @@ class App extends Component {
     this.setState({ bpm: target.value, metronomeId });
   };
 
+  inputChange = ({ target }) => this.setState({ wordInput: target.value });
+
   render() {
-    const { beat, prevWord, currentWord, nextWord } = this.state;
+    const { beat, prevWord, currentWord, nextWord, wordInput } = this.state;
 
     return (
       <ThemeProvider theme={{}}>
@@ -157,9 +153,7 @@ class App extends Component {
             </ScoreCounter>
           </Header>
           <WordsBar prevWord={prevWord} currentWord={currentWord} nextWord={nextWord} />
-          <form onSubmit={this.submitWord}>
-            <input value={this.state.input} onChange={({ target }) => this.setState({ input: target.value })} />
-          </form>
+          <WordInput onSubmit={this.submitWord} value={wordInput} onChange={this.inputChange} />
           <BPMCounter beat={beat} bpm={this.state.bpm} changeBPM={this.changeBPM} />
         </Container>
       </ThemeProvider>
